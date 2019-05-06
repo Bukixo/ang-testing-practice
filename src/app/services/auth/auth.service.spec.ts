@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
 import { AuthService } from './auth.service';
-import { LoginComponentComponent } from 'src/app/login-component/login-component.component';
 
 describe('AuthService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
@@ -12,29 +11,24 @@ describe('AuthService', () => {
   });
 });
 
-
-describe('Component: Login', ()=>{
-  let component: LoginComponentComponent;
+describe('Service: Auth', ()=>{
   let service: AuthService;
-
-  beforeEach(() => {
+  beforeEach(() => { ///before each test is run we create a new instance of AuthService and store it inside the service variable
     service = new AuthService();
-    component = new LoginComponentComponent(service);
   });
 
   afterEach(() =>{
+    service = null;  // once service has run we set it back to null and remove and token in the local storage
     localStorage.removeItem('token');
-    service = null;
-    component = null;
   });
 
-  it('canLogin returns false when the user is not authenticated', () => {
-    expect(component.needsLogin()).toBeTruthy();
-  });
-
-  it('canLogin returns false when the user is not authenticated', ()=> {
+  it('should return ture from isAuthenticated when there is a token',() =>{
     localStorage.setItem('token', '1234');
-    expect(component.needsLogin()).toBeFalsy();
+    expect(service.isAuthenticated()).toBeTruthy()
   });
 
+  it('should return false from isAuthenticated when there is no token', () => {
+    expect(service.isAuthenticated()).toBeFalsy();
+  });
+   
 });
