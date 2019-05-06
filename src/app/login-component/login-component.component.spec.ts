@@ -45,27 +45,29 @@ xdescribe('AuthService', () => {
 
 describe('Component: Login', ()=>{
   let component: LoginComponentComponent;
-  let service: MockAuthService;
+  let service: AuthService;
+  let spy: any;
 
   beforeEach(() => {
-    service = new MockAuthService();
-    component = new LoginComponentComponent(service);
+    service = new AuthService(); //created a real instance of AuthService
+    component = new LoginComponentComponent(service); //inject it into our component
   });
 
-  afterEach(() =>{
-    localStorage.removeItem('token');
+  afterEach(() =>{ //sets our service and component back to null which means theres not need to set localstorage to empty
     service = null;
     component = null;
   });
 
   it('canLogin returns false when the user is not authenticated', () => {
-    service.authenticated = false;
+    spy = spyOn(service, 'isAuthenticated').and.returnValue(false); //created a spy that will get the 'isAuthenticated' from the service and return it to false
     expect(component.needsLogin()).toBeTruthy();
+    expect(service.isAuthenticated).toHaveBeenCalled() // here we check if the if 'isAuthenticated' function was called.
   });
 
   it('canLogin returns false when the user is not authenticated', ()=> {
-    service.authenticated = true;
+    spy = spyOn(service, 'isAuthenticated').and.returnValue(true)
     expect(component.needsLogin()).toBeFalsy();
+    expect(service.isAuthenticated).toHaveBeenCalled();
   });
 
 });
