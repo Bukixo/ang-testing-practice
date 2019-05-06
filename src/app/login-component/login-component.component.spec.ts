@@ -45,29 +45,42 @@ xdescribe('AuthService', () => {
 
 describe('Component: Login', ()=>{
   let component: LoginComponentComponent;
-  let service: AuthService;
+  let authService: AuthService;
+  let fixture : ComponentFixture<LoginComponentComponent>; // a fixture is a wrapper for a component and its a template
   let spy: any;
 
   beforeEach(() => {
-    service = new AuthService(); //created a real instance of AuthService
-    component = new LoginComponentComponent(service); //inject it into our component
+    TestBed.configureTestingModule({ ///initiating components to perform dependency injection
+      declarations: [LoginComponentComponent],
+      providers: [AuthService]
+    });
+
+    //create an instance of a component fixture, this injects the authservice into component constructor
+    fixture = TestBed.createComponent(LoginComponentComponent);
+
+    //get test component from the fixture
+    component = fixture.componentInstance
+
+    // UserService provided to the TestBed
+    authService =  TestBed.get(AuthService) // we can get resolve dependencies using the the testbed injector
+
   });
 
   afterEach(() =>{ //sets our service and component back to null which means theres not need to set localstorage to empty
-    service = null;
+    authService = null;
     component = null;
   });
 
   it('canLogin returns false when the user is not authenticated', () => {
-    spy = spyOn(service, 'isAuthenticated').and.returnValue(false); //created a spy that will get the 'isAuthenticated' from the service and return it to false
+    spy = spyOn(authService, 'isAuthenticated').and.returnValue(false); //created a spy that will get the 'isAuthenticated' from the authService and return it to false
     expect(component.needsLogin()).toBeTruthy();
-    expect(service.isAuthenticated).toHaveBeenCalled() // here we check if the if 'isAuthenticated' function was called.
+    expect(authService.isAuthenticated).toHaveBeenCalled() // here we check if the if 'isAuthenticated' function was called.
   });
 
   it('canLogin returns false when the user is not authenticated', ()=> {
-    spy = spyOn(service, 'isAuthenticated').and.returnValue(true)
+    spy = spyOn(authService, 'isAuthenticated').and.returnValue(true)
     expect(component.needsLogin()).toBeFalsy();
-    expect(service.isAuthenticated).toHaveBeenCalled();
+    expect(authService.isAuthenticated).toHaveBeenCalled();
   });
 
 });
